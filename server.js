@@ -123,6 +123,21 @@ app.post('/api/addevent', upload.single('eventImage'), (req, res) => {
 	});
 });
 
+//getallusers
+app.get('/api/getusers', (req, res) => {
+	Event.find(function (err, users) {
+		if (err) {
+			res.send(err)
+		} else {
+			res.status(200).json({
+				error: false,
+				errors: [],
+				data: generatedata(users)
+			})
+		}
+	})
+});
+
 //geteventdetails
 app.get('/api/getevent/:id', (req, res) => {
 	Event.findOne({ _id: req.params.id }, function (err, result) {
