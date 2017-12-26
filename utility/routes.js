@@ -10,7 +10,7 @@ const upload = multer({ dest: './uploads/' });
 var _ = require('lodash');
 
 routes.get('/', function (req, res) {
-	res.send('<h1>Hello</h1>')
+	res.send('<h1>Hello world</h1>')
 })
 routes.post('/api/signup', (req, res) => {
 	var body = _.pick(req.body, ['email', 'password', 'name'])
