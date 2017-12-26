@@ -155,7 +155,7 @@ app.delete('/api/delevent/:id', (req, res) => {
 	});
 });
 
-//updateevent
+//updateeventdetail
 
 app.put('/api/updateevent/:id',upload.single('eventImage'), (req, res) => {
 	Event.findOneAndUpdate({ _id: req.params.id }, {
