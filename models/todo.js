@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 let beautifyUnique = require('mongoose-beautiful-unique-validation');
-var userSchema = mongoose.Schema({
+var todoSchema = mongoose.Schema({
   text:{
   	type:String,
   	require:true,
@@ -17,5 +17,5 @@ var userSchema = mongoose.Schema({
   }
 })
 userSchema.plugin(beautifyUnique);
-const Todo = mongoose.model('Todo', userSchema);
+const Todo = mongoose.model('Todo', todoSchema);
 module.exports = {Todo}
