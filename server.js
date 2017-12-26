@@ -30,10 +30,10 @@ const fileFilter = function (req, file, cb) {
 
 const upload = multer({ dest: './uploads/' });
 
-
+app.use('/uploads' + express.static('uploads'))
 
 app.use(bodyParser.json());
-app.use('/uploads' + express.static('uploads'))
+
 app.get('/', function (req, res) {
 	res.send('<h1>Hello</h1>')
 })
