@@ -105,7 +105,8 @@ app.post('/api/addevent', upload.single('eventImage'), (req, res) => {
 		time: req.body.time,
 		publishedBy: req.body.publishedBy,
 		tags: req.body.tags,
-		published: req.body.published
+		published: req.body.published,
+		image:req.file.originalname
 	});
 	event.save().then((events) => {
 		res.status(200).json({
