@@ -30,7 +30,7 @@ const fileFilter = function (req, file, cb) {
 
 const upload = multer({ dest: './uploads/' });
 
-app.use('/uploads' , express.static('uploads'))
+app.use('/uploads', express.static('uploads'))
 
 app.use(bodyParser.json());
 
@@ -153,6 +153,36 @@ app.delete('/api/delevent/:id', (req, res) => {
 			})
 		}
 	});
+});
+
+//updateevent
+
+app.put('/updateevent/:id', (req, res, next) => {
+	Event.findOneAndUpdate({ _id: req.params.id }, {
+		$set: {
+			event_name: req.body.event_name,
+			place: req.body.place,
+			date: req.body.date,
+			time: req.body.time,
+			publishedBy: req.body.publishedBy,
+			img: req.body.img,
+			tags: req.body.tags,
+			published: req.body.published
+		}
+	}, function (err, result) {
+		if (err) {
+			res.json(err);
+		}
+		else {
+			res.status(200).json({
+				error: false,
+				errors: [],
+				data: generatedata(result)
+			})
+		}
+
+	})
+
 });
 
 app.listen(process.env.PORT || 3000, () => {
