@@ -14,7 +14,7 @@ const multer = require('multer')
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		cb(null, __dirname+'/uploads/')
+		cb(null, __dirname + '/uploads/')
 	},
 	filename: function (req, file, cb) {
 		cb(null, new Date().toISOString() + file.originalname)
@@ -28,13 +28,13 @@ const fileFilter = function (req, file, cb) {
 		cb(null, false)
 }
 
-const upload = multer({dest:'./uploads/'});
+const upload = multer({ dest: './uploads/' });
 
 
 
 app.use(bodyParser.json());
-app.use('/uploads'+express.static('uploads'))
-app.get('/',function(req,res){
+app.use('/uploads' + app.static('uploads'))
+app.get('/', function (req, res) {
 	res.send('<h1>Hello</h1>')
 })
 app.post('/api/signup', (req, res) => {
@@ -106,7 +106,7 @@ app.post('/api/addevent', upload.single('eventImage'), (req, res) => {
 		publishedBy: req.body.publishedBy,
 		tags: req.body.tags,
 		published: req.body.published,
-		image:req.file.originalname
+		image: req.file.originalname
 	});
 	event.save().then((events) => {
 		res.status(200).json({
