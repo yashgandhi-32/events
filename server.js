@@ -34,6 +34,9 @@ const upload = multer({dest:'./uploads/'});
 
 app.use(bodyParser.json());
 
+app.get('/',function(req,res){
+	res.send('<h1>Hello</h1>')
+})
 app.post('/api/signup', (req, res) => {
 	var body = _.pick(req.body, ['email', 'password', 'name'])
 	var user = new User(body);
