@@ -157,7 +157,7 @@ app.delete('/api/delevent/:id', (req, res) => {
 
 //updateevent
 
-app.put('/updateevent/:id', (req, res, next) => {
+app.put('/api/updateevent/:id', (req, res, next) => {
 	Event.findOneAndUpdate({ _id: req.params.id }, {
 		$set: {
 			event_name: req.body.event_name,
