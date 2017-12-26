@@ -157,7 +157,7 @@ app.delete('/api/delevent/:id', (req, res) => {
 
 //updateevent
 
-app.put('/api/updateevent/:id', (req, res, next) => {
+app.put('/api/updateevent/:id',upload.single('eventImage'), (req, res, next) => {
 	Event.findOneAndUpdate({ _id: req.params.id }, {
 		$set: {
 			event_name: req.body.event_name,
@@ -165,9 +165,9 @@ app.put('/api/updateevent/:id', (req, res, next) => {
 			date: req.body.date,
 			time: req.body.time,
 			publishedBy: req.body.publishedBy,
-			img: req.body.img,
 			tags: req.body.tags,
-			published: req.body.published
+			published: req.body.published,
+			image: req.file.originalname
 		}
 	}, function (err, result) {
 		if (err) {
