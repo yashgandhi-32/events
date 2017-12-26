@@ -11,15 +11,6 @@ var userSchema = mongoose.Schema({
 	password: {
 		type: String,
 		required: [true, "Password cant be left blank"],
-		validate: {
-			validator: (value) => {
-				if (value.length < 6) {
-					return false;
-				} else
-					return true;
-			},
-			message: 'Password length must be minimum 6 characters long'
-		}
 	},
 	name:{
 		type:String,
