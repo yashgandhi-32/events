@@ -8,46 +8,81 @@ var { errorgenerator } = require('./errorgenerator')
 var { generatedata } = require('./generatedata')
 const upload = multer({ dest: './uploads/' });
 var _ = require('lodash');
+const bcrypt = require('bcrypt');
+
+//homeroute 
 
 routes.get('/', function (req, res) {
 	res.send('<h1>Hello world</h1>')
-})
-routes.post('/api/signup', (req, res) => {
-	var body = _.pick(req.body, ['email', 'password', 'name'])
-	var user = new User(body);
-	user.save().then((user) => {
-		res.status(200).json({
-			error: false,
-			errors: [],
-			data: generatedata(_.pick(user, ['email', 'createdAt', '_id', 'name']))
-		})
-	}).catch((e) => {
-		res.status(400).json({
-			error: true,
-			errors: errorgenerator(e.errors),
-			data: []
-		})
-	});
 });
 
-//login
-routes.post('/api/login', (req, res) => {
-	var body = _.pick(req.body, ['email', 'password'])
-	User.findOne({ email: body.email, password: body.password }, function (err, docs) {
-		if (err) {
-			res.send(400)
-		} if (docs) {
-			var token = jwt.sign(_.pick(docs, ['email', 'createdAt', '_id']), 'dbbjqbdjbqjbdjqb');
+
+//signup route
+
+routes.post('/api/signup', (req, res) => {
+	var body = _.pick(req.body, ['email', 'password', 'name'])
+	if (body.password.length < 6) {
+		res.status(400).json({
+			error: true,
+			errors: [{msg:"Password must be 6 characters long"}],
+			data: []
+		})
+	} else {
+		body.password = bcrypt.hashSync(body.password, 4)
+		var user = new User(body);
+		console.log(user.password)
+		user.save().then((user) => {
 			res.status(200).json({
 				error: false,
 				errors: [],
-				data: token
+				data: generatedata(user)
 			})
+		}).catch((e) => {
+			console.log(e)
+			res.status(400).json({
+				error: true,
+				errors: errorgenerator(e.errors),
+				data: []
+			})
+		});
+	}
+});
+
+
+//login
+
+
+routes.post('/api/login', (req, res) => {
+	var body = _.pick(req.body, ['email', 'password']);
+	User.findOne({ email: body.email }, function (err, docs) {
+		if (err) {
+			console.log(err)
+			res.status(400).json("something went wrong")
+		} if (!!docs) {
+			bcrypt.compare(body.password, docs.password, function (err, result) {
+				console.log(result)
+				if (result) {
+					var token = jwt.sign(_.pick(docs, ['email', 'createdAt', '_id']), 'dbbjqbdjbqjbdjqb');
+					res.status(200).json({
+						error: false,
+						errors: [],
+						data: token
+					});
+				} else {
+					res.status(400).json({
+						error: true,
+						errors: [{
+							msg: "Password doesn't match"
+						}],
+						data: []
+					})
+				}
+			});
 		} else {
 			res.status(400).json({
 				error: true,
 				errors: [{
-					msg: 'Email not exist'
+					msg: "Email doesn't exist"
 				}],
 				data: []
 			})
@@ -147,7 +182,7 @@ routes.delete('/api/delevent/:id', (req, res) => {
 
 //updateevent
 
-routes.put('/api/updateevent/:id',upload.single('eventImage'), (req, res) => {
+routes.put('/api/updateevent/:id', upload.single('eventImage'), (req, res) => {
 	Event.findOneAndUpdate({ _id: req.params.id }, {
 		$set: {
 			event_name: req.body.event_name,
@@ -176,7 +211,7 @@ routes.put('/api/updateevent/:id',upload.single('eventImage'), (req, res) => {
 });
 
 
-module.exports = {routes}
+module.exports = { routes }
 
 
 // const storage = multer.diskStorage({
@@ -193,4 +228,3 @@ module.exports = {routes}
 // 		cb(null, true)
 // 	} else
 // 		cb(null, false)
-// }

@@ -4,6 +4,8 @@ var app = express();
 var connect = require('./db/connect')
 var { routes } = require('./utility/routes')
 
+
+
 app.use('/uploads', express.static('uploads'))
 
 app.use(bodyParser.json());

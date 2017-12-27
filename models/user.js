@@ -12,24 +12,16 @@ var userSchema = mongoose.Schema({
 		type: String,
 		required: [true, "Password cant be left blank"],
 	},
-	name:{
-		type:String,
-		required:true
+	name: {
+		type: String,
+		required: true
 	},
 	createdAt: {
 		type: Date,
 		default: Date.now
 	}
 })
-userSchema.methods.generateToken = function () {
-	var user = this;
-	var access = 'auth';
-	var token = jwt.sign({ _id: user._id.toHexString(), access }, 'gnekgnegweerjg').toString();
-	user.tokens.push({ access, token })
-	return user.save().then(() => {
-		return token;
-	})
-}
+
 userSchema.path('email').validate(function (value, respond) {
 	if (validator.isEmail(value)) {
 		return respond(true)
