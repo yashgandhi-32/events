@@ -90,6 +90,21 @@ routes.post('/api/login', (req, res) => {
 	});
 });
 
+routes.use((req, res, next) => {
+	var token = req.headers['token'];
+	if (token) {
+		jwt.verify(token,'dbbjqbdjbqjbdjqb', function (err, resp) {
+			if (err) {
+				res.status(500).send('Token Invalid');
+			} else {
+				next();
+			}
+		})
+	} else {
+		res.send('Please send a token')
+	}
+
+})
 //getallevents
 routes.get('/api/getevents', (req, res) => {
 	Event.find(function (err, events) {
