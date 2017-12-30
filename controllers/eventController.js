@@ -4,6 +4,8 @@ exports.addNewEvent = async (req, res) => {
     if (req.file != null) {
         console.log(req.file)
         req.body.eventImage = '/uploads/' + req.file.filename
+    }else{
+        req.body.eventImage = '/uploads/samepleimage'
     }
     const event = new Event(req.body)
     const newEvent = await event.save()
@@ -30,4 +32,8 @@ exports.validateEventDetails = function (req, res, next) {
             }
             next();
         });
+}
+exports.deleteEvent = async (req,res) => {
+    const userData = await Event.findOneAndRemove({_id:req.params.id})
+    res.json({ error: false, errors: [], data: userData });
 }

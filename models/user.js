@@ -5,13 +5,13 @@ var bcrypt = require('bcrypt')
 var userSchema = mongoose.Schema({
 	email: {
 		type: String,
-		required: [true, "Email cant be left blank"],
+		required: true,
 		trim: true,
 		minlength: 1
 	},
 	password: {
 		type: String,
-		required: [true, "Password cant be left blank"],
+		required: true,
 	},
 	name: {
 		type: String,
