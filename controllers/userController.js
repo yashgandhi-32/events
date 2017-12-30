@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const tokenHelper = require('../helpers/tokenhelper')
+const tokenHelper = require('../helpers/tokenHelper')
 
 exports.validateAuthCredentials = (req, res, next) => {
     if(req.path == '/signup')
@@ -113,7 +113,6 @@ exports.signIn = (req, res) => {
                             }],
                             msg: "Incorrect password."
                         });
-                        // return done(null, false, { msg: 'Invalid username or password.' });
                     }
                 });
 
@@ -125,3 +124,8 @@ exports.getUsersList = async (req, res) => {
     console.log(usersList+"123")
 	res.json({ error: false, errors: [], data: usersList });
 };
+
+exports.removeUser = async (req,res) => {
+    const userData = await User.findOneAndRemove({_id:req.params.id})
+    res.json({ error: false, errors: [], data: userData });
+}

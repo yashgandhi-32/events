@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-let beautifyUnique = require('mongoose-beautiful-unique-validation');
+
 var todoSchema = mongoose.Schema({
   text:{
   	type:String,

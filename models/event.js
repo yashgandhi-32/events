@@ -1,8 +1,7 @@
-
 const mongoose = require('mongoose');
 
 const eventSchema = mongoose.Schema({
-    event_name: {
+    eventName: {
         type: String,
         required: true
     },
@@ -28,18 +27,30 @@ const eventSchema = mongoose.Schema({
     },
     published: {
         type: Boolean,
-        default:false
+        default: false
     },
     publishedOn: {
         type: Date,
         default: Date.now
     },
-    image:{
-        type:String,
-        required:true
+    image: {
+        type: String,
+        required: true
+    },
+    likes: {
+        type: Number
+    },
+    comments: {
+        type: Array
     }
-     
 });
 
-const Event = mongoose.model('Event', eventSchema);
-module.exports = { Event }
+eventSchema.statics.getEventsList = function() {
+    return this.find()
+        .then((result) => {
+            return result
+        })
+}
+
+const Event = module.exports = mongoose.model('Event', eventSchema);
+
