@@ -4,14 +4,23 @@ exports.addNewEvent = async (req, res) => {
     if (req.file != null) {
         console.log(req.file)
         req.body.eventImage = '/uploads/' + req.file.filename
-    }else{
+    } else {
         req.body.eventImage = '/uploads/samepleimage'
     }
     const event = new Event(req.body)
     const newEvent = await event.save()
     res.json({ error: false, errors: [], data: newEvent });
 }
-
+exports.updateEvent = async (req, res) => {
+    if (req.file != null) {
+        console.log(req.file)
+        req.body.eventImage = '/uploads/' + req.file.filename
+    } else {
+        req.body.eventImage = '/uploads/samepleimage'
+    }
+    const updatedResult = await Event.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true }).exec()
+    res.json({ error: false, errors: [], data: updatedResult });
+}
 exports.getEventsList = async (req, res) => {
     const eventsList = await Event.getEventsList();
     res.json({ error: false, errors: [], data: eventsList });
@@ -33,7 +42,7 @@ exports.validateEventDetails = function (req, res, next) {
             next();
         });
 }
-exports.deleteEvent = async (req,res) => {
-    const userData = await Event.findOneAndRemove({_id:req.params.id})
+exports.deleteEvent = async (req, res) => {
+    const userData = await Event.findOneAndRemove({ _id: req.params.id })
     res.json({ error: false, errors: [], data: userData });
 }

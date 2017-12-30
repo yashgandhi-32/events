@@ -15,7 +15,7 @@ var storage = multer.diskStorage({
 });
 
 var fileFilter = function (req, file, cb) {
-    if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/jpg' || file.mimetype == 'iamge/png') {
+    if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/jpg' || file.mimetype == 'image/png') {
         cb(null, true)
     } else {
         cb(null, false)
@@ -30,6 +30,7 @@ const eventController = require("../controllers/eventController");
 
 router.get("/get/list", validate, eventController.getEventsList);
 router.delete("/delete/:id", validate, eventController.deleteEvent);
+router.patch("/update/:id", validate, upload.single('eventImage'), eventController.validateEventDetails, eventController.updateEvent);
 router.post("/add/event", validate, upload.single('eventImage'), eventController.validateEventDetails, eventController.addNewEvent);
 
 module.exports = router;
