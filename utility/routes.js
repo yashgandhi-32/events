@@ -11,14 +11,12 @@ var _ = require('lodash');
 const bcrypt = require('bcrypt');
 
 //homeroute 
-
 routes.get('/', function (req, res) {
 	res.send('<h1>Hello world</h1>')
 });
 
 
 //signup route
-
 routes.post('/api/signup', (req, res) => {
 	var body = _.pick(req.body, ['email', 'password', 'name'])
 	if (body.password.length < 6) {

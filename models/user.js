@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+var bcrypt = require('bcrypt')
 
 var userSchema = mongoose.Schema({
 	email: {
@@ -20,29 +21,49 @@ var userSchema = mongoose.Schema({
 		type: Date,
 		default: Date.now
 	}
-})
-
-userSchema.path('email').validate(function (value, respond) {
-	if (validator.isEmail(value)) {
-		return respond(true)
+});
+userSchema.pre('save', function (next) {
+	var user = this;
+	const saltRounds = 12;
+	if (!user.isModified('password')) {
+		return next();
 	}
-	return respond(false)
-}, "Email is invalid");
-userSchema.path('email').validate(function (value, respond) {
-	var self = this;
-	this.constructor.findOne({ email: value }, function (err, user) {
+	bcrypt.hash(user.password, saltRounds, function (err, hash) {
 		if (err) {
-			return respond(false);
+			return next(err);
 		}
-		if (user) {
-			if (self.id === user.id) {
-				return respond(true);
-			}
-			return respond(false);
-		}
-		respond(true);
+		user.password = hash;
+		next();
 	});
-}, 'Email Already exists');
+});
+userSchema.methods.comparePassword = function (candidatePassword) {
+	return bcrypt.compare(candidatePassword, this.password);
+};
+userSchema.statics.checkIfUserExists = function (username, kind) {
+	console.log({ email: username })
+	return this
+		.findOne({ email: username })
+		.then((result) => {
+			return result;
+		})
+		.catch((err) => {
+			debug(err);
+			throw err;
+		});
+};
 
-const User = mongoose.model('User', userSchema);
-module.exports = { User }
+userSchema.statics.getUser = (userId) => {
+	return User
+		.findOne({ _id: userId }, { password: 0, _v: 0 })
+		.then((result) => {
+			return result;
+		})
+};
+userSchema.statics.getUsersList = function() {
+	return this.find()
+		.then((result) => {
+			return result;
+		})
+};
+
+const User = module.exports = mongoose.model('User', userSchema);
