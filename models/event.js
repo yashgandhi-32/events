@@ -18,12 +18,10 @@ const eventSchema = mongoose.Schema({
         required: true
     },
     publishedBy: {
-        type: String,
-        required: true
+        type: String
     },
     tags: {
-        type: Array,
-        required: true
+        type: Array
     },
     published: {
         type: Boolean,
@@ -33,15 +31,17 @@ const eventSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    image: {
-        type: String,
-        required: true
+    eventImage: {
+        type: String
     },
     likes: {
         type: Number
     },
     comments: {
         type: Array
+    },
+    contact: {  //needed for user to contact event organizer
+        type: String
     }
 });
 
