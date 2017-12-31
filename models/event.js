@@ -5,12 +5,23 @@ const eventSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    place: {
-        type: String,
-        required: true
+    location: {
+        type: {
+            type: String,
+            default: 'Point',
+            required: true
+        },
+        coordinates: [{
+            type: Number,
+            required: true
+        }],
+        address: {
+            type: String,
+            required: true
+        }
     },
     date: {
-        type: String,
+        type: Date,
         required: true
     },
     time: {
@@ -37,15 +48,13 @@ const eventSchema = mongoose.Schema({
     likes: {
         type: Number
     },
-    comments: {
-        type: Array
-    },
+    comments: [String],
     contact: {  //needed for user to contact event organizer
         type: String
     }
 });
 
-eventSchema.statics.getEventsList = function() {
+eventSchema.statics.getEventsList = function () {
     return this.find()
         .then((result) => {
             return result

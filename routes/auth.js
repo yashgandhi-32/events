@@ -7,7 +7,8 @@ const userController = require("../controllers/userController");
 
 router.post("/signup", userController.validateAuthCredentials, userController.signUp);
 router.post("/signin", userController.validateAuthCredentials, userController.signIn);
-
+router.post('/generateotp', userController.generateOtp)
+router.post('/resetpassword', userController.resetPassword)
 
 module.exports = router;
 

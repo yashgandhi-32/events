@@ -1,10 +1,14 @@
 const User = require('../models/User');
 const tokenHelper = require('../helpers/tokenHelper')
+const mailHelper = require('../helpers/mailHelper')
+const mailOtp = require('../helpers/mailOtpGenerator')
+
 
 exports.validateAuthCredentials = (req, res, next) => {
-    if(req.path == '/signup')
-    req.assert("name", "name cannot be empty.").notEmpty();
+    if (req.path == '/signup')
+        req.assert("name", "name cannot be empty.").notEmpty();
     req.assert("email", "email cannot be empty.").notEmpty();
+    req.assert("email", "email is invalid.").isEmail();
     req.assert("password", "Password cannot be empty").notEmpty();
     req.assert("password", "Must be between 6 to 20 characters").len(6, 20);
     req.getValidationResult()
@@ -21,10 +25,9 @@ exports.validateAuthCredentials = (req, res, next) => {
 };
 
 exports.signUp = (req, res) => {
-
     const email = req.body.email;
     const password = req.body.password;
-    const name = req.body.name ;
+    const name = req.body.name;
 
     User.checkIfUserExists(email, 'email')
         .then((result) => {
@@ -121,11 +124,31 @@ exports.signIn = (req, res) => {
 
 exports.getUsersList = async (req, res) => {
     const usersList = await User.getUsersList();
-    console.log(usersList+"123")
-	res.json({ error: false, errors: [], data: usersList });
+    console.log(usersList + "123")
+    res.json({ error: false, errors: [], data: usersList });
 };
 
-exports.removeUser = async (req,res) => {
-    const userData = await User.findOneAndRemove({_id:req.params.id})
+exports.removeUser = async (req, res) => {
+    const userData = await User.findOneAndRemove({ _id: req.params.id })
     res.json({ error: false, errors: [], data: userData });
+}
+
+exports.generateOtp = async function (req, res) {
+    var otp = await mailOtp.generateOtpMail()
+    mailHelper.sendMail({
+        to: req.body.email,
+        subject: 'otp',
+        html: mailHelper.mailTemplateForOtp(otp.token)
+    }).then((response) => {
+        console.log(otp)
+        res.json({ error: false, errors: [], data: [{ encryptyotp: otp.encryptyotp }] });
+    })
+}
+exports.resetPassword = function (req, res) {
+     var response = mailOtp.checkOtpMail(req.body.otp, req.body.hashOtp)
+        if (response) {
+            res.json("it worked")
+        } else {
+            res.json({ error: true, errors: [{ "param": "otp", "msg": "otp doesnt match" }], data: [] });
+        }
 }
