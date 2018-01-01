@@ -32,8 +32,9 @@ app.use(expressValidator({
 
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
-const eventRouter = require('./routes/event')
 const userRouter = require('./routes/user');
+const eventRouter = require('./routes/event');
+
 
 
 app.use('/', indexRouter)

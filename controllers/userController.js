@@ -46,7 +46,12 @@ exports.signUp = (req, res) => {
             let user = new User(userObj);
 
             user.save()
-                .then(() => {
+                .then((user) => {
+                    mailHelper.sendMail({
+                        to: user.email,
+                        subject: 'Account created',
+                        html: mailHelper.mailTemplateForSignup()
+                    })
                     return res.status(200).json({
                         error: false,
                         errors: [],

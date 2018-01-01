@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-
+var jwtDecode = require('jwt-decode');
 
 exports.sign = (payload) => {
     return jwt.sign(payload, process.env.TOKEN_SECRET, {
@@ -32,3 +32,6 @@ exports.validate = (req, res, next) => {
     }
 };
 
+exports.decodejwt = function (token) {
+    return jwtDecode(token)._id
+}

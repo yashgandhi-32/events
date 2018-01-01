@@ -1,33 +1,40 @@
 const Event = require('../models/Event');
-var moment = require('moment')
+const moment = require('moment')
+const tokenHelper = require('../helpers/tokenHelper')
 
 exports.addNewEvent = async (req, res) => {
     if (req.file != null) {
         console.log(req.file)
         req.body.eventImage = '/uploads/' + req.file.filename
     } else {
+        var today = new Date()
+        req.body.author = tokenHelper.decodejwt(req.headers['authorization'])
+        req.body.date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0, 0);
         req.body.eventImage = '/uploads/samepleimage'
     }
-    req.body.date = new Date("<YYYY-mm-dd>");
     const event = new Event(req.body)
     const newEvent = await event.save()
     res.json({ error: false, errors: [], data: newEvent });
 }
 exports.updateEvent = async (req, res) => {
-    if (req.file != null) {
-        console.log(req.file)
-        req.body.eventImage = '/uploads/' + req.file.filename
+    let checkevent = await Event.findOne({ _id: req.params.id })
+    if (checkevent && checkevent.author.equals(tokenHelper.decodejwt(req.headers['authorization']))) {
+        if (req.file != null) {
+            console.log(req.file)
+            req.body.eventImage = '/uploads/' + req.file.filename
+        }
+        for (let key in req.body) {
+            if (checkevent[key] && key != '_id' && key != 'comments' && key !='eventImage') {
+                checkevent[key] = req.body[key]
+            }
+        }
+        const updatedResult = await Event.findOneAndUpdate({ _id: req.params.id }, checkevent, { new: true }).exec(function (err, updatedResult) {
+            if (updatedResult) res.json({ error: false, errors: [], data: updatedResult });
+            else res.json({ error: false, errors: [{ params: "event", msg: err.message }], data: [] });
+        })
     } else {
-        req.body.eventImage = '/uploads/samepleimage'
+        res.json({ error: false, errors: [{ params: "event", msg: "you are not authorized to update this store" }], data: [] });
     }
-    if (req.body.comments) {
-        delete req.body.comments;
-    }
-    req.body.publishedOn = Date.now()
-    const updatedResult = await Event.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true }).exec(function (err, updatedResult) {
-        if (updatedResult) res.json({ error: false, errors: [], data: updatedResult });
-        else res.json({ error: false, errors: [{ params: "event", msg: err.message }], data: [] });
-    })
 }
 exports.getEventsList = async (req, res) => {
     const eventsList = await Event.getEventsList();
@@ -61,7 +68,7 @@ exports.getEventByDate = function (req, res) {
     Event.aggregate([
         {
             $group: {
-                _id: "$likes",
+                _id: "$date",
                 data: {
                     $push: {
                         date: "$date",
@@ -75,7 +82,9 @@ exports.getEventByDate = function (req, res) {
                         publishedOn: "$publishedOn",
                         contact: "$contact",
                         likes: "$likes",
-                        comments: "$comments"
+                        comments: "$comments",
+                        author: "$author",
+                        _id: "$_id"
                     }
                 }
             }
@@ -84,4 +93,14 @@ exports.getEventByDate = function (req, res) {
             if (data) res.json({ error: false, errors: [], data: data });
             else res.json("erro")
         })
+}
+
+exports.addComment = async function (req, res) {
+    let result = await Event.findOne({ _id: req.params.id })
+    if (result) {
+        console.log(result)
+        result.comments.push(req.body.comment)
+        let data = await Event.findOneAndUpdate({ _id: req.params.id }, result, { new: true })
+        res.json({ error: false, errors: [], data: data });
+    }
 }

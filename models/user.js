@@ -53,13 +53,13 @@ userSchema.statics.checkIfUserExists = function (username, kind) {
 };
 
 userSchema.statics.getUser = (userId) => {
-	return User
+	return this
 		.findOne({ _id: userId }, { password: 0, _v: 0 })
 		.then((result) => {
 			return result;
 		})
 };
-userSchema.statics.getUsersList = function() {
+userSchema.statics.getUsersList = function () {
 	return this.find()
 		.then((result) => {
 			return result;

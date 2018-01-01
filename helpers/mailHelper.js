@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport({
     secure: false, // true for 465, false for other ports
     auth: {
         user: 'yg835007@gmail.com', // generated ethereal user
-        pass: 'akshat@1234' // generated ethereal password
+        pass: '' // generated ethereal password
     }
 });
 
@@ -43,3 +43,13 @@ exports.mailTemplateForOtp = function (otp) {
                      <body>${content}</body>
             </html>`
 };
+
+exports.mailTemplateForSignup = function(){
+    let content = `Hi there! Your account has been successfully created`;
+    return `<html>
+                  <head>
+                      <title>otp verificarion</title>
+                  </head>
+                     <body>${content}</body>
+            </html>`
+}

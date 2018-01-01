@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const moment = require('moment')
+const Schema = mongoose.Schema
 
 const eventSchema = mongoose.Schema({
     eventName: {
@@ -40,7 +42,7 @@ const eventSchema = mongoose.Schema({
     },
     publishedOn: {
         type: Date,
-        default: Date.now
+        default: new Date()
     },
     eventImage: {
         type: String
@@ -51,6 +53,11 @@ const eventSchema = mongoose.Schema({
     comments: [String],
     contact: {  //needed for user to contact event organizer
         type: String
+    },
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 });
 
@@ -61,5 +68,6 @@ eventSchema.statics.getEventsList = function () {
         })
 }
 
-const Event = module.exports = mongoose.model('Event', eventSchema);
 
+
+const Event = module.exports = mongoose.model('Event', eventSchema);
