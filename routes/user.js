@@ -5,7 +5,7 @@ const validate = require('../helpers/tokenHelper').validate
 //user controler
 const userController = require("../controllers/userController");
 
-router.get("/get/list", validate, userController.getUsersList);
-router.delete("/delete/:id", validate, userController.removeUser);
+router.get("/get/list", userController.getUsersList);
+router.delete("/delete/:id", userController.removeUser);
 
 module.exports = router;

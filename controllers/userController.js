@@ -31,8 +31,9 @@ exports.signUp = (req, res) => {
 
     User.checkIfUserExists(email, 'email')
         .then((result) => {
+            console.log(result)
             if (result && result._id) {
-                return res.status(400).json({
+                return res.status(200).json({
                     error: true,
                     errors: [{
                         param: "username",

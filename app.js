@@ -3,11 +3,12 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const expressValidator = require('express-validator');
-
+var cors = require('cors')
 
 //serving static files
 app.use('/uploads', express.static('uploads'))
 
+app.use(cors())
 // bodyParser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

@@ -47,7 +47,6 @@ userSchema.statics.checkIfUserExists = function (username, kind) {
 			return result;
 		})
 		.catch((err) => {
-			debug(err);
 			throw err;
 		});
 };

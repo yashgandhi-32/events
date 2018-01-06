@@ -8,19 +8,8 @@ const eventSchema = mongoose.Schema({
         required: true
     },
     location: {
-        type: {
-            type: String,
-            default: 'Point',
-            required: true
-        },
-        coordinates: [{
-            type: Number,
-            required: true
-        }],
-        address: {
-            type: String,
-            required: true
-        }
+        type: String,  
+        required  :true
     },
     date: {
         type: Date,
@@ -30,8 +19,14 @@ const eventSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
     publishedBy: {
-        type: String
+        type: String,
+        required:true
+       
     },
     tags: {
         type: Array
@@ -57,7 +52,6 @@ const eventSchema = mongoose.Schema({
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
     }
 });
 

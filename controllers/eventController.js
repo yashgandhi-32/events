@@ -3,19 +3,25 @@ const moment = require('moment')
 const tokenHelper = require('../helpers/tokenHelper')
 
 exports.addNewEvent = async (req, res) => {
+    console.log(req.body)
     if (req.file != null) {
-        console.log(req.file)
         req.body.eventImage = '/uploads/' + req.file.filename
     } else {
-        var today = new Date()
-        req.body.author = tokenHelper.decodejwt(req.headers['authorization'])
-        req.body.date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0, 0);
         req.body.eventImage = '/uploads/samepleimage'
     }
+    var today = new Date(req.body.date)
+   // req.body.author = tokenHelper.decodejwt(req.headers['authorization'])
+    req.body.date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0, 0);
     const event = new Event(req.body)
-    const newEvent = await event.save()
-    res.json({ error: false, errors: [], data: newEvent });
+    event.save().then((resp) => {
+        if (resp) {
+            res.json({ error: false, errors: [], data: resp });
+        }
+    }).catch((err) => {
+        res.json({ error: true, errors: [{ "param": event, msg: "err.message" }], data: [] })
+    })
 }
+    
 exports.updateEvent = async (req, res) => {
     let checkevent = await Event.findOne({ _id: req.params.id })
     if (checkevent && checkevent.author.equals(tokenHelper.decodejwt(req.headers['authorization']))) {
@@ -24,7 +30,7 @@ exports.updateEvent = async (req, res) => {
             req.body.eventImage = '/uploads/' + req.file.filename
         }
         for (let key in req.body) {
-            if (checkevent[key] && key != '_id' && key != 'comments' && key !='eventImage') {
+            if (checkevent[key] && key != '_id' && key != 'comments' && key != 'eventImage') {
                 checkevent[key] = req.body[key]
             }
         }
