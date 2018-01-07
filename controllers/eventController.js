@@ -10,7 +10,7 @@ exports.addNewEvent = async (req, res) => {
         req.body.eventImage = '/uploads/samepleimage'
     }
     var today = new Date(req.body.date)
-   // req.body.author = tokenHelper.decodejwt(req.headers['authorization'])
+    // req.body.author = tokenHelper.decodejwt(req.headers['authorization'])
     req.body.date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0, 0);
     const event = new Event(req.body)
     event.save().then((resp) => {
@@ -21,7 +21,7 @@ exports.addNewEvent = async (req, res) => {
         res.json({ error: true, errors: [{ "param": event, msg: "err.message" }], data: [] })
     })
 }
-    
+
 exports.updateEvent = async (req, res) => {
     let checkevent = await Event.findOne({ _id: req.params.id })
     if (checkevent && checkevent.author.equals(tokenHelper.decodejwt(req.headers['authorization']))) {
@@ -109,4 +109,8 @@ exports.addComment = async function (req, res) {
         let data = await Event.findOneAndUpdate({ _id: req.params.id }, result, { new: true })
         res.json({ error: false, errors: [], data: data });
     }
+}
+exports.getEvent = async function (req, res) {
+    let result = await Event.findOne({ _id: req.params.id });
+    res.json({ error: false, errors: [], data: result });
 }

@@ -29,6 +29,7 @@ var upload = multer({ storage: storage, limits: { fileSize: 10234 * 1024 * 5 }, 
 const eventController = require("../controllers/eventController");
 
 router.get("/get/list", eventController.getEventsList);
+router.get("/getevent/:id", eventController.getEvent);
 router.delete("/delete/:id", validate, eventController.deleteEvent);
 router.get("/get/listbydate", eventController.getEventByDate);
 router.patch("/update/:id", validate, upload.single('eventImage'), eventController.updateEvent);
