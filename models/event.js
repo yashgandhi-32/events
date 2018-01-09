@@ -5,35 +5,28 @@ const Schema = mongoose.Schema
 const eventSchema = mongoose.Schema({
     eventName: {
         type: String,
-        required: true
     },
     location: {
-        type: String,  
-        required  :true
+        type: String
     },
     date: {
-        type: Date,
-        required: true
+        type: Date
     },
     time: {
-        type: String,
-        required: true
+        type: String
     },
     description: {
-        type: String,
-        required: true
+        type: String
     },
     publishedBy: {
-        type: String,
-        required:true
+        type: String
        
     },
     tags: {
         type: Array
     },
     published: {
-        type: Boolean,
-        default: false
+        type: Boolean
     },
     publishedOn: {
         type: Date,

@@ -32,7 +32,8 @@ router.get("/get/list", eventController.getEventsList);
 router.get("/getevent/:id", eventController.getEvent);
 router.delete("/delete/:id", validate, eventController.deleteEvent);
 router.get("/get/listbydate", eventController.getEventByDate);
-router.patch("/update/:id", validate, upload.single('eventImage'), eventController.updateEvent);
+router.patch("/update/:id", upload.single('eventImage'), eventController.updateEvent);
 router.post("/add/event", upload.single('eventImage'), eventController.addNewEvent);
 router.post("/add/comment/:id", validate, eventController.addComment)
+
 module.exports = router;

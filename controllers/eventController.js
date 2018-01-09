@@ -23,25 +23,30 @@ exports.addNewEvent = async (req, res) => {
 }
 
 exports.updateEvent = async (req, res) => {
-    let checkevent = await Event.findOne({ _id: req.params.id })
-    if (checkevent && checkevent.author.equals(tokenHelper.decodejwt(req.headers['authorization']))) {
-        if (req.file != null) {
+  //  let checkevent = await Event.findOne({ _id: req.params.id })
+    // if (checkevent && checkevent.author.equals(tokenHelper.decodejwt(req.headers['authorization']))) {
+    let checkevent = req.body    
+    if (req.file != null) {
             console.log(req.file)
-            req.body.eventImage = '/uploads/' + req.file.filename
+            checkevent.eventImage = '/uploads/' + req.file.filename
+        }else{
+            delete checkevent.eventImage;
         }
-        for (let key in req.body) {
-            if (checkevent[key] && key != '_id' && key != 'comments' && key != 'eventImage') {
-                checkevent[key] = req.body[key]
-            }
-        }
+        delete checkevent.comments
+        // for (let key in req.body) {
+        //     if (checkevent[key] && key != '_id' && key != 'comments' && key != 'eventImage') {
+        //         checkevent[key] = req.body[key]
+        //     }
+        // }
         const updatedResult = await Event.findOneAndUpdate({ _id: req.params.id }, checkevent, { new: true }).exec(function (err, updatedResult) {
             if (updatedResult) res.json({ error: false, errors: [], data: updatedResult });
             else res.json({ error: false, errors: [{ params: "event", msg: err.message }], data: [] });
         })
-    } else {
-        res.json({ error: false, errors: [{ params: "event", msg: "you are not authorized to update this store" }], data: [] });
     }
-}
+    // } else {
+    //     res.json({ error: false, errors: [{ params: "event", msg: "you are not authorized to update this store" }], data: [] });
+    // }
+
 exports.getEventsList = async (req, res) => {
     const eventsList = await Event.getEventsList();
     res.json({ error: false, errors: [], data: eventsList });

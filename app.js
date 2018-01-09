@@ -35,12 +35,13 @@ const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
 const eventRouter = require('./routes/event');
-
+const contactRouter = require('./routes/contact')
 
 
 app.use('/', indexRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/event', eventRouter)
 app.use('/api/user', userRouter)
+app.use('/api/contact', contactRouter)
 
 module.exports = app
