@@ -1,6 +1,7 @@
 const Event = require('../models/Event');
 const moment = require('moment')
 const tokenHelper = require('../helpers/tokenHelper')
+const Comment = require('../models/Comments')
 
 exports.addNewEvent = async (req, res) => {
     console.log(req.body)
@@ -91,31 +92,32 @@ exports.getEventByDate = function (req, res) {
                         tags: "$tags",
                         eventImage: "$eventImage",
                         publishedOn: "$publishedOn",
+                        description: "$description",
                         contact: "$contact",
                         likes: "$likes",
-                        comments: "$comments",
-                        author: "$author",
                         _id: "$_id"
                     }
                 }
             }
-        }, { $sort: { "_id": -1 } }])
+        }, { $sort: { "_id": 1 } }])
         .exec((err, data) => {
             if (data) res.json({ error: false, errors: [], data: data });
-            else res.json("erro")
+            else res.json("error")
         })
 }
 
 exports.addComment = async function (req, res) {
-    let result = await Event.findOne({ _id: req.params.id })
-    if (result) {
-        console.log(result)
-        result.comments.push(req.body.comment)
-        let data = await Event.findOneAndUpdate({ _id: req.params.id }, result, { new: true })
-        res.json({ error: false, errors: [], data: data });
-    }
+    req.body.event = req.params.id
+    var comment = new Comment(req.body)
+    comment.save().then((resp) => {
+        if (resp) {
+            res.json({ error: false, errors: [], data: resp });
+        }
+    }).catch((err) => {
+        res.json({ error: true, errors: [{ "param": comment, msg: "err.message" }], data: [] })
+    })
 }
 exports.getEvent = async function (req, res) {
-    let result = await Event.findOne({ _id: req.params.id });
+    let result = await Event.findOne({ _id: req.params.id }).populate('comments');
     res.json({ error: false, errors: [], data: result });
 }

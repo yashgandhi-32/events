@@ -30,10 +30,10 @@ const eventController = require("../controllers/eventController");
 
 router.get("/get/list", eventController.getEventsList);
 router.get("/getevent/:id", eventController.getEvent);
-router.delete("/delete/:id", validate, eventController.deleteEvent);
-router.get("/get/listbydate", eventController.getEventByDate);
-router.patch("/update/:id", upload.single('eventImage'), eventController.updateEvent);
-router.post("/add/event", upload.single('eventImage'), eventController.addNewEvent);
-router.post("/add/comment/:id", validate, eventController.addComment)
+router.get("/delete/:id", validate, eventController.deleteEvent);
+router.get("/listbydate", eventController.getEventByDate);
+router.post("/update/:id", validate, upload.single('eventImage'), eventController.updateEvent);
+router.post("/add/event", validate, upload.single('eventImage'), eventController.addNewEvent);
+router.post("/addcomment/:id", eventController.addComment)
 
 module.exports = router;

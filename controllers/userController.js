@@ -6,11 +6,11 @@ const mailOtp = require('../helpers/mailOtpGenerator')
 
 exports.validateAuthCredentials = (req, res, next) => {
     if (req.path == '/signup')
-        req.assert("name", "name cannot be empty.").notEmpty();
-    req.assert("email", "email cannot be empty.").notEmpty();
-    req.assert("email", "email is invalid.").isEmail();
-    req.assert("password", "Password cannot be empty").notEmpty();
-    req.assert("password", "Must be between 6 to 20 characters").len(6, 20);
+        req.chekBody("name", "name cannot be empty.").notEmpty();
+    req.checkBody("email", "email cannot be empty.").notEmpty();
+    req.checkBody("email", "email is invalid.").isEmail();
+    req.checkBody("password", "Password cannot be empty").notEmpty();
+    req.checkBody("password", "Must be between 6 to 20 characters").len(6, 20);
     req.getValidationResult()
         .then((result) => {
             if (!result.isEmpty()) {
@@ -73,6 +73,7 @@ exports.signUp = (req, res) => {
 };
 
 exports.signIn = (req, res) => {
+    console.log(req.body)
     let email = req.body.email;
     let password = req.body.password;
 
@@ -108,7 +109,7 @@ exports.signIn = (req, res) => {
                             name: existingUser.name || null,
                             email: existingUser.email,
                         });
-                        return res.status(200).json({
+                        return res.json({
                             error: false,
                             errors: [],
                             data: token
