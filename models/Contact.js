@@ -7,6 +7,9 @@ var contactSchema = mongoose.Schema({
 	from: {
 		type: String
 	},
+	name:{
+		type:String
+	},
 	status:{
 		type:Boolean,
 		default:false

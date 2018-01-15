@@ -4,7 +4,6 @@ const tokenHelper = require('../helpers/tokenHelper')
 const Comment = require('../models/Comments')
 
 exports.addNewEvent = async (req, res) => {
-    console.log(req.body)
     if (req.file != null) {
         req.body.eventImage = '/uploads/' + req.file.filename
     } else {

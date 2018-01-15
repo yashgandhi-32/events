@@ -1,6 +1,7 @@
 const Contact = require('../models/Contact');
 const mailHelper = require('../helpers/mailHelper')
 exports.submitQuery = function (req, res) {
+    console.log(req.body)
     var contact = new Contact(req.body)
     contact.save().then((resp) => {
         if (resp) {
